@@ -7,7 +7,7 @@ import ujson
 class MBusHandler:
 
     def __init__(self):
-        self.mbus_uart = MBusUART()
+        self.mbus_uart = MBusUART(baudrate=300)
         self.devices = {}
 
     def parse_devices(self):
@@ -38,10 +38,10 @@ class MBusHandler:
 
     def run(self):
         while True:
-            mbus_message = self.mbus_uart.read_telegram()
+            mbus_message, ticks = self.mbus_uart.read_telegram()
             if (mbus_message[1] == 0x40) and ((mbus_message[2] == 0xfe) or (mbus_message[2] == 0xfd) or (mbus_message[2] in self.devices.keys())):
-                self.mbus_uart.send_telegram(bytearray([0xE5]))
+                self.mbus_uart.send_telegram(bytearray([0xE5]),ticks)
             elif ((mbus_message[1] == 0x5b) or (mbus_message[1] == 0x7b)) and (mbus_message[2] in self.devices.keys()):
                 device = self.devices[mbus_message[2]]
                 resp_bytes = ubinascii.unhexlify(device.get_rsp_ud2())
-                self.mbus_uart.send_telegram(resp_bytes)
+                self.mbus_uart.send_telegram(resp_bytes,ticks)

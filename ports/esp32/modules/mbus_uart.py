@@ -4,9 +4,9 @@ import ubinascii
 
 class MBusUART:
 
-    def __init__(self):
-        self.uart = UART(2, 2400)
-        self.uart.init(2400, bits=8, parity=0, stop=1)
+    def __init__(self,baudrate=2400):
+        self.uart = UART(2, baudrate)
+        self.uart.init(baudrate=baudrate,bits=8,parity=0,stop=1,timeout_char=0)
 
     def get_time(self):
         return "%04u-%02u-%02u %02u:%02u:%02u" % time.localtime()[0:6]
@@ -25,9 +25,10 @@ class MBusUART:
     def handle_short_message(self):
         append_bytes = self.uart.read(4)
         if (append_bytes != None) and (len(append_bytes) == 4):
+            ticks = time.ticks_ms()
             mbus_message = bytearray([0x10]) + append_bytes
             self.log_incoming(ubinascii.hexlify(mbus_message, "-"))
-            return mbus_message
+            return mbus_message,ticks
 
     def handle_long_message(self):
         header_bytes = self.uart.read(3)
@@ -36,9 +37,10 @@ class MBusUART:
             length = mbus_message_start[1]
             append_bytes = self.uart.read(length + 2)
             if (append_bytes != None) and (len(append_bytes) > 0):
+                ticks = time.ticks_ms()
                 mbus_message = mbus_message_start + append_bytes
                 self.log_incoming(ubinascii.hexlify(mbus_message, "-"))
-                return mbus_message
+                return mbus_message,ticks
 
     def log_incoming(self, incoming_bytes):
         print("[{}][master >] - {}".format(self.get_time(),incoming_bytes))
@@ -46,9 +48,11 @@ class MBusUART:
     def log_outgoing(self, outgoing_bytes):
         print("[{}][slave  <] - {}".format(self.get_time(),outgoing_bytes))
 
-    def send_telegram(self, data):
+    def send_telegram(self, data, ticks):
         self.log_outgoing(ubinascii.hexlify(data, "-"))
         len_data = len(data)
+        send_ticks = time.ticks_ms()
+        print("sending reply after {} ms".format(send_ticks-ticks))
         self.uart.write(data)
         # Since the MBus transceiver echoes all transmitted data on the RX line..
         # .. we have to get rid of the echoed data before continuing reading
