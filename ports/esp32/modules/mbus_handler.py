@@ -3,12 +3,15 @@ from mbus_record import MBusValueRecord
 from mbus_uart import MBusUART
 import ubinascii
 import ujson
+import uasyncio as asyncio
 
 class MBusHandler:
 
     def __init__(self):
         self.mbus_uart = MBusUART(baudrate=300)
         self.devices = {}
+        self.loop = asyncio.get_event_loop()
+        self.loop.create_task(self.run())
 
     def parse_devices(self):
         meter_file = open(".config/meter_config.json")
@@ -34,14 +37,17 @@ class MBusHandler:
         print("Starting handler..")
         self.devices = {}
         self.parse_devices()
-        self.run()
+        self.loop.run_forever()
 
-    def run(self):
+    async def run(self):
         while True:
-            mbus_message, ticks = self.mbus_uart.read_telegram()
+            mbus_message = await self.mbus_uart.read_telegram()
+            if (len(mbus_message) < 3):
+                print("Throwing data: {}".format(ubinascii.hexlify(mbus_message,"-")))
+                continue
             if (mbus_message[1] == 0x40) and ((mbus_message[2] == 0xfe) or (mbus_message[2] == 0xfd) or (mbus_message[2] in self.devices.keys())):
-                self.mbus_uart.send_telegram(bytearray([0xE5]),ticks)
+                await self.mbus_uart.send_telegram(bytearray([0xE5]))
             elif ((mbus_message[1] == 0x5b) or (mbus_message[1] == 0x7b)) and (mbus_message[2] in self.devices.keys()):
                 device = self.devices[mbus_message[2]]
                 resp_bytes = ubinascii.unhexlify(device.get_rsp_ud2())
-                self.mbus_uart.send_telegram(resp_bytes,ticks)
+                await self.mbus_uart.send_telegram(resp_bytes)
