@@ -11,7 +11,7 @@ class MBusUART:
         self.uart.init(baudrate=baudrate,bits=8,parity=0,stop=1,timeout_char=0)
         self.timeout = timeout
         self.loop = asyncio.get_event_loop(ioq_len=16)
-        self.swriter = asyncio.SteamWriter(self.uart,{})
+        self.swriter = asyncio.StreamWriter(self.uart,{})
         self.sreader = asyncio.StreamReader(self.uart)
         self.delay = aswitch.Delay_ms()
         loop = asyncio.get_event_loop()
