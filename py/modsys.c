@@ -58,27 +58,36 @@ STATIC const mp_obj_tuple_t mp_sys_version_info_obj = {{&mp_type_tuple}, 3, {I(3
 
 // sys.implementation object
 // this holds the MicroPython version
-STATIC const mp_obj_tuple_t mp_sys_implementation_version_info_obj = {
+
+STATIC const mp_obj_tuple_t mp_sys_implementation_meterboard_version_info_obj = {
+    {&mp_type_tuple},
+    2,
+    { I(MB32_VERSION_MAJOR), I(MB32_VERSION_MINOR) }
+};
+
+STATIC const mp_obj_tuple_t mp_sys_implementation_micropython_version_info_obj = {
     {&mp_type_tuple},
     3,
     { I(MICROPY_VERSION_MAJOR), I(MICROPY_VERSION_MINOR), I(MICROPY_VERSION_MICRO) }
 };
 #if MICROPY_PY_ATTRTUPLE
-STATIC const qstr impl_fields[] = { MP_QSTR_name, MP_QSTR_version };
+STATIC const qstr impl_fields[] = { MP_QSTR_name, MP_QSTR_meterboard_version, MP_QSTR_micropython_version };
 STATIC MP_DEFINE_ATTRTUPLE(
     mp_sys_implementation_obj,
     impl_fields,
-    2,
-        MP_ROM_QSTR(MP_QSTR_micropython),
-        MP_ROM_PTR(&mp_sys_implementation_version_info_obj)
+    3,
+        MP_ROM_QSTR(MP_QSTR_MeterBoard32),
+        MP_ROM_PTR(&mp_sys_implementation_meterboard_version_info_obj),
+        MP_ROM_PTR(&mp_sys_implementation_micropython_version_info_obj)
 );
 #else
 STATIC const mp_rom_obj_tuple_t mp_sys_implementation_obj = {
     {&mp_type_tuple},
-    2,
+    3,
     {
-        MP_ROM_QSTR(MP_QSTR_micropython),
-        MP_ROM_PTR(&mp_sys_implementation_version_info_obj),
+        MP_ROM_QSTR(MP_QSTR_MeterBoard32),
+        MP_ROM_PTR(&mp_sys_implementation_meterboard_version_info_obj),
+        MP_ROM_PTR(&mp_sys_implementation_micropython_version_info_obj),
     }
 };
 #endif

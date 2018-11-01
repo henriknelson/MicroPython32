@@ -130,7 +130,7 @@ STATIC void handle_op(mp_obj_webrepl_t *self) {
 
     switch (self->hdr.type) {
         case GET_VER: {
-            static char ver[] = {MICROPY_VERSION_MAJOR, MICROPY_VERSION_MINOR, MICROPY_VERSION_MICRO};
+            static char ver[] = {MB32_VERSION_MAJOR,MB32_VERSION_MINOR,MICROPY_VERSION_MAJOR, MICROPY_VERSION_MINOR, MICROPY_VERSION_MICRO};
             write_webrepl(self->sock, ver, sizeof(ver));
             self->hdr_to_recv = sizeof(struct webrepl_file);
             return;
