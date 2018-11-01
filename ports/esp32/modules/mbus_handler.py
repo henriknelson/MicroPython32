@@ -43,7 +43,7 @@ class MBusHandler:
 
     async def update_devices(self):
         while True:
-            await asyncio.sleep(60*60)
+            await asyncio.sleep(60)
             for device in self.devices.values():
                 device.update()
 

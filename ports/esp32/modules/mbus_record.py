@@ -1,3 +1,5 @@
+import random
+
 class MBusValueRecord:
 
 	STORAGE_MASK = 0x40		# 0100 0000
@@ -12,16 +14,18 @@ class MBusValueRecord:
 		self.dib = dib
 		self.vib = vib
 		self.data = data
-		self._bytes = bytearray([])
-		self._bytes.extend(self.dib)
-		self._bytes.extend(self.vib)
-		self._bytes.extend(self.data)
 
         def update(self):
-                pass
+                current_value = int.from_bytes(self.data,'little')
+                new_value = current_value + random.randint(0,5)
+                self.data = (new_value).to_bytes(4,'little')
 
 	def get_bytes(self):
-                return self._bytes
+                bytes = bytearray([])
+		bytes.extend(self.dib)
+		bytes.extend(self.vib)
+		bytes.extend(self.data)
+                return bytes
 
 	def set_storage(self,storage):
 		if (storage < 0) or (storage > 2**41):
