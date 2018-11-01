@@ -394,6 +394,61 @@ done:
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_stream_unbuffered_readline_obj, 1, 2, stream_unbuffered_readline);
 
+// Unbuffered, inefficient implementation of read_mbus_telegram() for raw I/O files.
+STATIC mp_obj_t stream_unbuffered_read_mbus_telegram(mp_obj_t self_in) {
+    const mp_stream_p_t *stream_p = mp_get_stream(self_in);
+
+    mp_int_t max_size = -1;
+    
+    vstr_t vstr;
+    if (max_size != -1) {
+        vstr_init(&vstr, max_size);
+    } else {
+        vstr_init(&vstr, 16);
+    }
+
+    while (max_size == -1 || max_size-- != 0) {
+        char *p = vstr_add_len(&vstr, 1);
+        int error;
+        mp_uint_t out_sz = stream_p->read(self_in, p, 1, &error);
+        if (out_sz == MP_STREAM_ERROR) {
+            if (mp_is_nonblocking_error(error)) {
+                if (vstr.len == 1) {
+                    // We just incremented it, but otherwise we read nothing
+                    // and immediately got EAGAIN. This case is not well
+                    // specified in
+                    // https://docs.python.org/3/library/io.html#io.IOBase.readline
+                    // unlike similar case for read(). But we follow the latter's
+                    // behavior - return None.
+                    vstr_clear(&vstr);
+                    return mp_const_none;
+                } else {
+                    goto done;
+                }
+            }
+            mp_raise_OSError(error);
+        }
+	if (out_sz == 0) {
+            done:
+               vstr_cut_tail_bytes(&vstr, 1);
+       	       break;
+        }
+        if (vstr.len > 2)	 
+	{
+	    if ((vstr.buf[0] == '\x10') && (vstr.len == 5) && (*p == '\x16'))
+            {
+               break;
+            }
+	    if ((vstr.buf[0] == '\x68') && (vstr.len == ((int)vstr.buf[1] + 6)) && (*p == '\x16'))
+            {
+               break;
+            }
+        }
+    }
+    return mp_obj_new_str_from_vstr(STREAM_CONTENT_TYPE(stream_p), &vstr);
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_stream_unbuffered_read_mbus_telegram_obj, stream_unbuffered_read_mbus_telegram);
+
 // TODO take an optional extra argument (what does it do exactly?)
 STATIC mp_obj_t stream_unbuffered_readlines(mp_obj_t self) {
     mp_obj_t lines = mp_obj_new_list(0, NULL);

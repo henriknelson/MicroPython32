@@ -1,5 +1,7 @@
 from mbus_record import MBusValueRecord
 import ubinascii
+import random
+import time
 
 class MBusDevice:
 
@@ -8,11 +10,28 @@ class MBusDevice:
         self._secondary_address = secondary_address
         self._manufacturer = manufacturer
         self._type = meter_type
-	self._value_records = []
-	self._access_number = 1
+	self._access_number = random.randint(0,255)
+	self._records = []
+        self._rsp_ud2 = []
+        self._selected = False
+    
+    def get_time(self):
+        return "%04u-%02u-%02u %02u:%02u:%02u" % time.localtime()[0:6]
+
+    def log(self, message):
+        print("[{}][debug] - {}".format(self.get_time(),message))
+
+    def update(self):
+        for record in self._records:
+  	    record.update()
+        self.log("Device with ID {} has updated its data".format(self._secondary_address))
+        self.seal()
 
     def add_record(self,record):
-	self._value_records.append(record)
+	self._records.append(record)
+
+    def seal(self):
+        self._rsp_ud2 = self.get_rsp_ud2()
 
     def get_primary_address(self):
         return self._primary_address
@@ -64,6 +83,9 @@ class MBusDevice:
     def calculate_checksum(self, message):
         return sum([int(x, 16) if type(x) == str else x for x in message]) & 0xFF
 
+    def get_latest_values(self):
+        return self._rsp_ud2
+
     def get_rsp_ud2(self):
         resp_bytes = []
         resp_bytes.append(0x68)  # start
@@ -72,7 +94,7 @@ class MBusDevice:
         resp_bytes.append(0x68)  # start
         resp_bytes.append(0x08)  # C
         resp_bytes.append(self._primary_address)  # A
-        resp_bytes.append(0x72)
+        resp_bytes.append(0x72) # CI
         resp_bytes.extend(self.get_address_bytes())
         resp_bytes.extend(self.get_manufacturer_bytes())
         resp_bytes.append(0x01)  # version
@@ -81,19 +103,15 @@ class MBusDevice:
         resp_bytes.append(0x00)  # status
         resp_bytes.append(0x00)  # configuration 1
         resp_bytes.append(0x00)  # configuration 2
-        #resp_bytes.append(0x02)
-        #resp_bytes.append(0x06)
-        #resp_bytes.append(0xD2)
-        #resp_bytes.append(0x04)
-	for value_record in self._value_records:
-		resp_bytes.extend(value_record.get_bytes())
+	for record in self._records:
+		resp_bytes.extend(record.get_bytes())
         resp_bytes.append(self.calculate_checksum(resp_bytes[4:]))
         resp_bytes.append(0x16)  # stop
         length = len(resp_bytes) - 9 + 3
         resp_bytes[1] = length
         resp_bytes[2] = length
         ret = ["{:>2}".format(hex(x)[2:]).replace(' ', '0') if type(x) == int else x for x in resp_bytes]
-	if self._access_number < 253:
+	if self._access_number < 255:
 		self._access_number = self._access_number + 1
 	else:
 		self._access_number = 1

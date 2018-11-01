@@ -50,7 +50,7 @@ typedef struct _machine_uart_obj_t {
     uint16_t timeout_char;  // timeout waiting between chars (in ms)
 } machine_uart_obj_t;
 
-STATIC const char *_parity_name[] = {"None", "1", "0"};
+STATIC const char *_parity_name[] = {"None", "Odd", "Even"};
 
 /******************************************************************************/
 // MicroPython bindings for UART
@@ -272,6 +272,7 @@ STATIC const mp_rom_map_elem_t machine_uart_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_any), MP_ROM_PTR(&machine_uart_any_obj) },
     { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mp_stream_read_obj) },
     { MP_ROM_QSTR(MP_QSTR_readline), MP_ROM_PTR(&mp_stream_unbuffered_readline_obj) },
+    { MP_ROM_QSTR(MP_QSTR_read_mbus_telegram), MP_ROM_PTR(&mp_stream_unbuffered_read_mbus_telegram_obj) },
     { MP_ROM_QSTR(MP_QSTR_readinto), MP_ROM_PTR(&mp_stream_readinto_obj) },
     { MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&mp_stream_write_obj) },
 };

@@ -12,11 +12,13 @@ class MBusValueRecord:
 		self.dib = dib
 		self.vib = vib
 		self.data = data
-		ret_bytes = []
-		ret_bytes.extend(self.dib)
-		ret_bytes.extend(self.vib)
-		ret_bytes.extend(self.data)
-		self._bytes = bytearray(ret_bytes)
+		self._bytes = bytearray([])
+		self._bytes.extend(self.dib)
+		self._bytes.extend(self.vib)
+		self._bytes.extend(self.data)
+
+        def update(self):
+                pass
 
 	def get_bytes(self):
                 return self._bytes
@@ -107,16 +109,3 @@ class MBusValueRecord:
 	def get_data_field(self):
 		return (self.dib[0] & self.DATA_TYPE_MASK)
 
-#rec = MBusValueRecord()
-#rec.set_subunit(0x3FF)
-
-#rec.set_storage(2045)
-#print(rec.get_storage())
-#rec.set_function(3)
-#print(rec.get_function())
-#rec.set_tariff(1000)
-#print(rec.get_tariff())
-#for elem in rec.dib:
-#	print('{0:08b}'.format(elem))
-#print(rec.get_subunit())
-#print(rec.get_bytes())
