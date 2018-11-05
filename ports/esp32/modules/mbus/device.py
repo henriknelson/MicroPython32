@@ -33,7 +33,7 @@ class MBusDevice:
         return self._selected
 
     def log(self, message):
-        print("[{}][debug] - {}".format(self.get_time(),message))
+        print("[{}][debug   ] {}".format(self.get_time(),message))
 
     def update(self):
         for record in self._records:

@@ -46,10 +46,10 @@ class MBusUART:
         print("[{}][slave  >] - {}".format(self.get_time(),ubinascii.hexlify(data_bytes)))
 
     def log_debug(self,name,data_bytes):
-        print("[{}][{}    ] - {}".format(self.get_time(),name, ubinascii.hexlify(data_bytes)))
+        print("[{}][{}   ] - {}".format(self.get_time(),name, ubinascii.hexlify(data_bytes)))
 
     def log_debug_string(self,name,debug_string):
-        print("[{}][{}    ] - {}".format(self.get_time(),name, debug_string))
+        print("[{}][{}   ] - {}".format(self.get_time(),name, debug_string))
 
     def send_telegram(self, data, ticks=None):
         len_data = len(data)
@@ -71,6 +71,6 @@ class MBusUART:
             duplicated_bytes.extend(read_bytes)
         self.log_debug("echo",duplicated_bytes)
         if ticks:
-            print("The reply was sent to the master after {} milliseconds".format(time_diff))
+            sef.log_debug_string("debug","The reply was sent to the master after {} milliseconds".format(time_diff))
         print("\r\n")
 

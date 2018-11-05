@@ -40,7 +40,7 @@ class MBusHandler:
         	return "%04u-%02u-%02u %02u:%02u:%02u" % time.localtime()[0:6]
 
     	def log(self, message):
-        	print("[{}][debug] - {}".format(self.get_time(),message))
+        	print("[{}][debug   ] {}".format(self.get_time(),message))
 
 	def start(self):
 		print("Initializing MBus handler..")
