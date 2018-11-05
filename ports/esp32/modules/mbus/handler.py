@@ -37,7 +37,7 @@ class MBusHandler:
 		self.devices[device.get_primary_address()] = device
 
     	def get_time(self):
-        	return "%04u-%02u-%02u %02u:%02u:%02u" % time.localtime()[0:6]
+        	return "%02u:%02u:%02u (%d)" % self.rtc.datetime()[4:8]
 
     	def log(self, message):
         	print("[{}][debug   ] {}".format(self.get_time(),message))

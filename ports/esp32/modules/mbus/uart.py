@@ -71,6 +71,6 @@ class MBusUART:
             duplicated_bytes.extend(read_bytes)
         self.log_debug("echo",duplicated_bytes)
         if ticks:
-            sef.log_debug_string("debug","The reply was sent to the master after {} milliseconds".format(time_diff))
+            self.log_debug_string("debug","The reply was sent to the master after {} milliseconds".format(time_diff))
         print("\r\n")
 

@@ -17,7 +17,7 @@ class MBusDevice:
         self._selected = False
     
     def get_time(self):
-        return "%04u-%02u-%02u %02u:%02u:%02u" % time.localtime()[0:6]
+        return "%02u:%02u:%02u (%d)" % self.rtc.datetime()[4:8]
 
     def select(self):
         if not self._selected:
