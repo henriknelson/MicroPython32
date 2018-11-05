@@ -1,6 +1,6 @@
 import random
 
-class MBusValueRecord:
+class ValueRecord:
 
 	STORAGE_MASK = 0x40		# 0100 0000
 	FUNCTION_MASK = 0x30   		# 0011 0000
@@ -18,7 +18,7 @@ class MBusValueRecord:
         def update(self):
                 current_value = int.from_bytes(self.data,'little')
                 new_value = current_value + random.randint(0,5)
-                self.data = (new_value).to_bytes(4,'little')
+                self.data = (new_value).to_bytes(len(self.data),'little')
 
 	def get_bytes(self):
                 bytes = bytearray([])

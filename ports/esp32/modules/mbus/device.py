@@ -1,7 +1,8 @@
-from mbus_record import MBusValueRecord
+from mbus.record import ValueRecord
 import ubinascii
 import random
 import time
+import re
 
 class MBusDevice:
 
@@ -17,6 +18,19 @@ class MBusDevice:
     
     def get_time(self):
         return "%04u-%02u-%02u %02u:%02u:%02u" % time.localtime()[0:6]
+
+    def select(self):
+        if not self._selected:
+        	self._selected = True
+		self.log("device {} is now selected".format(self._secondary_address))
+
+    def deselect(self):
+        if self._selected:
+        	self._selected = False
+		self.log("device {} is now deselected".format(self._secondary_address))
+
+    def is_selected(self):
+        return self._selected
 
     def log(self, message):
         print("[{}][debug] - {}".format(self.get_time(),message))
@@ -38,6 +52,12 @@ class MBusDevice:
 
     def get_secondary_address(self):
         return self._secondary_address
+
+    def matches_secondary_address(self,search_string):
+        pattern = re.compile(search_string.replace('f','[0-9]')) 
+        if pattern.match(self._secondary_address):
+            return True
+        return False
 
     def get_manufacturer_id(self):
         return self._manufacturer

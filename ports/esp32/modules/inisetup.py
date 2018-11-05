@@ -42,10 +42,83 @@ def setup():
         "dib": "04",
         "vib": "863B",
         "data": "D2040000"
+      },
+      {
+        "dib": "04",
+        "vib": "16",
+        "data": "17000000"
+      },
+      {
+        "dib": "04",
+        "vib": "2E",
+        "data": "7F000000"
+      },
+      {
+        "dib": "04",
+        "vib": "3B",
+        "data": "19000000"
+      },
+      {
+        "dib": "04",
+        "vib": "5B",
+        "data": "16000000"
+      },
+      {
+        "dib": "04",
+        "vib": "5F",
+        "data": "17000000"
+      },
+      {
+        "dib": "02",
+        "vib": "63",
+        "data": "0100"
       }
     ],
     "MeterId": "14881488",
     "PrimaryAddress": 2,
+    "MeterType": 4,
+    "ManufacturerId": "HCN"
+  },
+  {
+    "DataRecords": [
+      {
+        "dib": "04",
+        "vib": "863B",
+        "data": "D2040000"
+      },
+      {
+        "dib": "04",
+        "vib": "16",
+        "data": "17000000"
+      },
+      {
+        "dib": "04",
+        "vib": "2E",
+        "data": "7F000000"
+      },
+      {
+        "dib": "04",
+        "vib": "3B",
+        "data": "19000000"
+      },
+      {
+        "dib": "04",
+        "vib": "5B",
+        "data": "16000000"
+      },
+      {
+        "dib": "04",
+        "vib": "5F",
+        "data": "17000000"
+      },
+      {
+        "dib": "02",
+        "vib": "63",
+        "data": "0100"
+      }
+    ],
+    "MeterId": "14882488",
+    "PrimaryAddress": 253,
     "MeterType": 4,
     "ManufacturerId": "HCN"
   }
@@ -86,9 +159,7 @@ webrepl.start()
         f4.write("""\
 # This file is executed after every boot)
 from neo import Neo
-from mbus_device import MBusDevice
-from mbus_handler import MBusHandler
-from mbus_record import MBusValueRecord
+from mbus.handler import MBusHandler
 
 neo = Neo(13)
 neo.set_color(0,255,0)

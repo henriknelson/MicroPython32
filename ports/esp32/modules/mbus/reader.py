@@ -38,9 +38,8 @@ class MBusReader(asyncio.StreamReader):
                        print("obviously we read too much")
                     buf = buf[0:(buf[1] + 6)]
                     break
-            	elif ((buf[0] != 0x10) and (buf[0] != 0x68)):
-                    buf = bytearray(b'')
                 else:
+                    buf = bytearray(b'')
                     print("WTF; {}".format(ubinascii.hexlify(buf,"-")))
         if DEBUG and __debug__:
             log.debug("MBusReader.read_telegram(): %s", buf)
