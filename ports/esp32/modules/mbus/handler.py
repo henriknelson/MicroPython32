@@ -1,6 +1,7 @@
 from mbus.device import MBusDevice
 from mbus.record import ValueRecord
 from mbus.uart import MBusUART
+from machine import RTC
 import ubinascii
 import ujson
 import time
@@ -14,6 +15,7 @@ class MBusHandler:
 		self.loop = asyncio.get_event_loop()
 		self.loop.create_task(self.mbus_uart.read_telegram())
 		self.loop.create_task(self.update_devices())
+		self.rtc = RTC()
 
 	def parse_devices(self):
 		meter_file = open(".config/meter_config.json")

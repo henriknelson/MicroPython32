@@ -1,4 +1,5 @@
 from mbus.record import ValueRecord
+from machine import RTC
 import ubinascii
 import random
 import time
@@ -15,6 +16,7 @@ class MBusDevice:
 	self._records = []
         self._rsp_ud2 = []
         self._selected = False
+        self.rtc = RTC()
     
     def get_time(self):
         return "%02u:%02u:%02u (%d)" % self.rtc.datetime()[4:8]
