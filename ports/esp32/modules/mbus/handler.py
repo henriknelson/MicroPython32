@@ -65,7 +65,7 @@ class MBusHandler:
 					# If broadcast to all devices on bus, have them reply or indicate collision
 					elif telegram[2] == 0xfe:
 						#map(lambda device: device.select(),self.devices.values())
-						no_of_devices = len(self.devices.values())
+						no_of_devices = len(list(self.devices.values()))
 						if no_of_devices >= 2:
 							self.mbus_uart.send_collision()
 						elif no_of_devices == 1:
