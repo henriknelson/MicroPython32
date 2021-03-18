@@ -6,7 +6,7 @@ try:
 except ImportError:
     import utime as time
 import utimeq
-import ucollections
+import ucollections_custom
 
 
 type_gen = type((lambda: (yield))())
@@ -34,12 +34,12 @@ class TimeoutError(CancelledError):
 class EventLoop:
 
     def __init__(self, runq_len=16, waitq_len=16, ioq_len=0, lp_len=0):
-        self.runq = ucollections.deque((), runq_len, True)
+        self.runq = ucollections_custom.deque((), runq_len, True)
         self._max_overdue_ms = 0
         self.lpq = utimeq.utimeq(lp_len) if lp_len else None
         self.ioq_len = ioq_len
         if ioq_len:
-            self.ioq = ucollections.deque((), ioq_len, True)
+            self.ioq = ucollections_custom.deque((), ioq_len, True)
             self._call_io = self._call_now
         else:
             self._call_io = self.call_soon
