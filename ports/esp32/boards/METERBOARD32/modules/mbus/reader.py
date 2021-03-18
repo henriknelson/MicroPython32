@@ -1,8 +1,9 @@
-import uasyncio as asyncio
-from uasyncio.core import *
+import uasyncio_fast as asyncio
+from uasyncio_fast.core import *
 import ubinascii
 
 class MBusReader(asyncio.StreamReader):
+    """StreamReader descendant that tries to read a MBus telegram on an MBus bus"""
 
     def __init__(self, polls, ios=None):
         super().__init__(polls,ios)
@@ -19,7 +20,7 @@ class MBusReader(asyncio.StreamReader):
 
     def read_telegram(self):
         if DEBUG and __debug__:
-            log.debug("MBusReader.read_telegram()")     
+            log.debug("MBusReader.read_telegram()")
         buf = bytearray(b'')
         while True:
             yield IORead(self.polls)

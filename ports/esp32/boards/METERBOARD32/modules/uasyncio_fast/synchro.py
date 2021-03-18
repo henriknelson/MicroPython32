@@ -1,4 +1,4 @@
-from uasyncio import core
+from uasyncio_fast import core
 
 class Lock:
 

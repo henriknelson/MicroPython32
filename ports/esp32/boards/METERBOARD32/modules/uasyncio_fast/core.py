@@ -1,4 +1,4 @@
-# uasyncio.core fast_io
+# uasyncio_fast.core fast_io
 # fork: peterhinch/micropython-lib branch: uasyncio-io-fast-and-rw
 version = 'fast_io'
 try:
@@ -20,7 +20,7 @@ def set_debug(val):
     DEBUG = val
     if val:
         import logging
-        log = logging.getLogger("uasyncio.core")
+        log = logging.getLogger("uasyncio_fast.core")
 
 
 class CancelledError(Exception):

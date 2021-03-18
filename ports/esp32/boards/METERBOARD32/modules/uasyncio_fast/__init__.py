@@ -1,9 +1,9 @@
-# uasyncio.__init__ fast_io
+# uasyncio-fast.__init__ fast_io
 # fork: peterhinch/micropython-lib branch: uasyncio-io-fast-and-rw
 import uerrno
 import uselect as select
 import usocket as _socket
-from uasyncio.core import *
+from uasyncio_fast.core import *
 
 DEBUG = 0
 log = None
@@ -13,7 +13,7 @@ def set_debug(val):
     DEBUG = val
     if val:
         import logging
-        log = logging.getLogger("uasyncio")
+        log = logging.getLogger("uasyncio_fast")
 
 # add_writer causes read failure if passed the same sock instance as was passed
 # to add_reader. Cand we fix this by maintaining two object maps?
@@ -133,7 +133,7 @@ class StreamReader:
             # This should not happen for real sockets, but can easily
             # happen for stream wrappers (ssl, websockets, etc.)
             #log.warn("Empty read")
-        yield IOReadDone(self.polls)  # uasyncio.core calls remove_reader
+        yield IOReadDone(self.polls)  # uasyncio_fast.core calls remove_reader
         # This de-registers device as a read device with poll via
         # PollEventLoop._unregister
         return res  # Next iteration raises StopIteration and returns result
@@ -249,7 +249,7 @@ def open_connection(host, port, ssl=False):
     if DEBUG and __debug__:
         log.debug("open_connection: After iowait: %s", s)
     if ssl:
-        print("Warning: uasyncio SSL support is alpha")
+        print("Warning: uasyncio_fast SSL support is alpha")
         import ussl
         s.setblocking(True)
         s2 = ussl.wrap_socket(s)
@@ -283,5 +283,5 @@ def start_server(client_coro, host, port, backlog=10):
         yield client_coro(StreamReader(s2), StreamWriter(s2, extra))
 
 
-import uasyncio.core
-uasyncio.core._event_loop_class = PollEventLoop
+import uasyncio_fast.core
+uasyncio_fast.core._event_loop_class = PollEventLoop

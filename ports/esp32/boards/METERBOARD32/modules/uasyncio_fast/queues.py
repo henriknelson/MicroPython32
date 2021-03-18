@@ -1,5 +1,5 @@
 from collections.deque import deque
-from uasyncio.core import sleep
+from uasyncio_fast.core import sleep
 
 
 class QueueEmpty(Exception):

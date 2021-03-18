@@ -1,4 +1,4 @@
-ESPIDF = /home/henrik/Development/MicroPython/esp-idf
+ESPIDF = /home/henrik/esp/esp-idf
 #PORT = /dev/ttyUSB0
 #FLASH_MODE = qio
 #FLASH_SIZE = 4MB

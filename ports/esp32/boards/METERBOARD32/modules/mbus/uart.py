@@ -2,10 +2,10 @@ from machine import UART, RTC
 from mbus.reader import MBusReader
 import time
 import ubinascii
-import uasyncio as asyncio
+import uasyncio_fast as asyncio
 
 class MBusUART:
-
+    """Wrapper for a HW UART connected to an MBus bus (via a TSS721 IC).\nProvides the user with a nice interface for reading/writing, and also provides the possibility to signal collisions on the bus.\n"""
     def __init__(self,baudrate=2400,timeout=350,callback=lambda x:print(x),debug=False):
         self.callback = callback
         self.uart = UART(2, baudrate)

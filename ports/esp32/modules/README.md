@@ -1,2 +1,2 @@
 # MeterBoard32_firmware
-Firmware for my hardware project MeterBoard32
+MicroPython based firmware for my hardware project MeterBoard32

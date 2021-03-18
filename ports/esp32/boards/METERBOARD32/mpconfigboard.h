@@ -1,0 +1,3 @@
+#define MICROPY_HW_BOARD_NAME "MeterBoard32"
+#define MICROPY_HW_MCU_NAME "ESP32-D0WDQ6"
+#define MICROPY_PY_SYS_PLATFORM "CliffordBoard"
