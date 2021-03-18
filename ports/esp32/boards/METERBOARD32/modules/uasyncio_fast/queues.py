@@ -1,4 +1,4 @@
-from collections_custom.deque import deque
+from collections.deque import deque
 from uasyncio_fast.core import sleep
 
 
