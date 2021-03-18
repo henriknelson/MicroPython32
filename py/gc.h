@@ -26,10 +26,8 @@
 #ifndef MICROPY_INCLUDED_PY_GC_H
 #define MICROPY_INCLUDED_PY_GC_H
 
-#include <stdint.h>
-
-#include "py/mpconfig.h"
-#include "py/misc.h"
+#include <stdbool.h>
+#include <stddef.h>
 
 void gc_init(void *start, void *end);
 
@@ -48,7 +46,11 @@ void gc_collect_end(void);
 // Use this function to sweep the whole heap and run all finalisers
 void gc_sweep_all(void);
 
-void *gc_alloc(size_t n_bytes, bool has_finaliser);
+enum {
+    GC_ALLOC_FLAG_HAS_FINALISER = 1,
+};
+
+void *gc_alloc(size_t n_bytes, unsigned int alloc_flags);
 void gc_free(void *ptr); // does not call finaliser
 size_t gc_nbytes(const void *ptr);
 void *gc_realloc(void *ptr, size_t n_bytes, bool allow_move);

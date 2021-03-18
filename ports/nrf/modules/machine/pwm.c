@@ -70,8 +70,6 @@ STATIC const nrfx_pwm_t machine_hard_pwm_instances[] = {
 #if NRF52840
     NRFX_PWM_INSTANCE(3),
 #endif
-#else
-    NULL
 #endif
 };
 
@@ -93,14 +91,13 @@ void pwm_init0(void) {
 
 
 STATIC int hard_pwm_find(mp_obj_t id) {
-    if (MP_OBJ_IS_INT(id)) {
+    if (mp_obj_is_int(id)) {
         // given an integer id
         int pwm_id = mp_obj_get_int(id);
         if (pwm_id >= 0 && pwm_id < MP_ARRAY_SIZE(machine_hard_pwm_obj)) {
             return pwm_id;
         }
-        nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError,
-            "PWM(%d) does not exist", pwm_id));
+        mp_raise_ValueError(MP_ERROR_TEXT("PWM doesn't exist"));
     }
     return -1;
 }
@@ -252,8 +249,7 @@ STATIC mp_obj_t machine_hard_pwm_make_new(mp_arg_val_t *args) {
     if (args[ARG_period].u_obj != MP_OBJ_NULL) {
         self->p_config->period = mp_obj_get_int(args[ARG_period].u_obj);
     } else {
-	    nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError,
-                  "PWM period has to be within 16000 frequence cycles", self->p_config->period));
+        mp_raise_ValueError(MP_ERROR_TEXT("PWM period must be within 16000 cycles"));
     }
 
     if (args[ARG_duty].u_obj != MP_OBJ_NULL) {
@@ -273,7 +269,7 @@ STATIC mp_obj_t machine_hard_pwm_make_new(mp_arg_val_t *args) {
     } else {
         self->p_config->mode = MODE_HIGH_LOW;
     }
- 
+
     return MP_OBJ_FROM_PTR(self);
 }
 
@@ -294,7 +290,7 @@ STATIC void machine_hard_pwm_init(mp_obj_t self_in, mp_arg_val_t *args) {
     config.load_mode      = NRF_PWM_LOAD_INDIVIDUAL;
     config.step_mode      = NRF_PWM_STEP_AUTO;
 
-    nrfx_pwm_init(self->p_pwm, &config, NULL);
+    nrfx_pwm_init(self->p_pwm, &config, NULL, NULL);
 
     uint16_t pulse_width = ((self->p_config->period * self->p_config->duty) / 100);
 

@@ -116,8 +116,7 @@ STATIC int rtc_find(mp_obj_t id) {
     if (rtc_id >= 0 && rtc_id < MP_ARRAY_SIZE(machine_rtc_obj)) {
         return rtc_id;
     }
-    nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_ValueError,
-        "RTCounter(%d) does not exist", rtc_id));
+    mp_raise_ValueError(MP_ERROR_TEXT("RTCounter doesn't exist"));
 }
 
 STATIC void rtc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
@@ -154,16 +153,23 @@ STATIC mp_obj_t machine_rtc_make_new(const mp_obj_type_t *type, size_t n_args, s
 
     int rtc_id = rtc_find(args[ARG_id].u_obj);
 
+    #if MICROPY_PY_TIME_TICKS
+    if (rtc_id == 1) {
+        // time module uses RTC1, prevent using it
+        mp_raise_ValueError(MP_ERROR_TEXT("RTC1 reserved by time module"));
+    }
+    #endif
+
     // const and non-const part of the RTC object.
     const machine_rtc_obj_t * self = &machine_rtc_obj[rtc_id];
     machine_rtc_config_t *config = self->config;
 
     if (args[ARG_callback].u_obj == mp_const_none) {
         config->callback = NULL;
-    } else if (MP_OBJ_IS_FUN(args[ARG_callback].u_obj)) {
+    } else if (mp_obj_is_fun(args[ARG_callback].u_obj)) {
         config->callback = args[ARG_callback].u_obj;
     } else {
-        mp_raise_ValueError("callback must be a function");
+        mp_raise_ValueError(MP_ERROR_TEXT("callback must be a function"));
     }
 
     // Periodic or one-shot
@@ -176,8 +182,8 @@ STATIC mp_obj_t machine_rtc_make_new(const mp_obj_type_t *type, size_t n_args, s
     }
 
     // Start the low-frequency clock (if it hasn't been started already)
-    if (!nrf_clock_lf_is_running()) {
-        nrf_clock_task_trigger(NRF_CLOCK_TASK_LFCLKSTART);
+    if (!nrf_clock_lf_is_running(NRF_CLOCK)) {
+        nrf_clock_task_trigger(NRF_CLOCK, NRF_CLOCK_TASK_LFCLKSTART);
     }
 
     // Make sure it's uninitialized.

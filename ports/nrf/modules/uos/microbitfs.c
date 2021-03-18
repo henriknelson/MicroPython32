@@ -31,12 +31,11 @@
 
 #include "microbitfs.h"
 #include "drivers/flash.h"
-#include "modrandom.h"
+#include "drivers/rng.h"
 #include "py/obj.h"
 #include "py/stream.h"
 #include "py/runtime.h"
 #include "extmod/vfs.h"
-#include "mpconfigport.h"
 
 #if MICROPY_MBFS
 
@@ -175,7 +174,7 @@ STATIC void init_limits(void) {
 }
 
 STATIC void randomise_start_index(void) {
-    start_index = machine_rng_generate_random_word() % chunks_in_file_system + 1;
+    start_index = rng_generate_random_word() % chunks_in_file_system + 1;
 }
 
 void microbit_filesystem_init(void) {
@@ -377,7 +376,7 @@ STATIC file_descriptor_obj *microbit_file_descriptor_new(uint8_t start_chunk, bo
 }
 
 STATIC mp_obj_t microbit_remove(mp_obj_t filename) {
-    mp_uint_t name_len;
+    size_t name_len;
     const char *name = mp_obj_str_get_data(filename, &name_len);
     mp_uint_t index = microbit_find_file(name, name_len);
     if (index == 255) {
@@ -389,7 +388,7 @@ STATIC mp_obj_t microbit_remove(mp_obj_t filename) {
 
 STATIC void check_file_open(file_descriptor_obj *self) {
     if (!self->open) {
-        mp_raise_ValueError("I/O operation on closed file");
+        mp_raise_ValueError(MP_ERROR_TEXT("I/O operation on closed file"));
     }
 }
 
@@ -487,7 +486,7 @@ STATIC mp_obj_t microbit_file_list(void) {
 }
 
 STATIC mp_obj_t microbit_file_size(mp_obj_t filename) {
-    mp_uint_t name_len;
+    size_t name_len;
     const char *name = mp_obj_str_get_data(filename, &name_len);
     uint8_t chunk = microbit_find_file(name, name_len);
     if (chunk == 255) {
@@ -659,7 +658,7 @@ mp_obj_t uos_mbfs_open(size_t n_args, const mp_obj_t *args) {
     int read = -1;
     int text = -1;
     if (n_args == 2) {
-        mp_uint_t len;
+        size_t len;
         const char *mode = mp_obj_str_get_data(args[1], &len);
         for (mp_uint_t i = 0; i < len; i++) {
             if (mode[i] == 'r' || mode[i] == 'w') {
@@ -677,7 +676,7 @@ mp_obj_t uos_mbfs_open(size_t n_args, const mp_obj_t *args) {
             }
         }
     }
-    mp_uint_t name_len;
+    size_t name_len;
     const char *filename = mp_obj_str_get_data(args[0], &name_len);
     file_descriptor_obj *res = microbit_file_open(filename, name_len, read == 0, text == 0);
     if (res == NULL) {
@@ -685,7 +684,7 @@ mp_obj_t uos_mbfs_open(size_t n_args, const mp_obj_t *args) {
     }
     return res;
 mode_error:
-    mp_raise_ValueError("illegal mode");
+    mp_raise_ValueError(MP_ERROR_TEXT("illegal mode"));
 }
 
 STATIC mp_obj_t uos_mbfs_stat(mp_obj_t filename) {

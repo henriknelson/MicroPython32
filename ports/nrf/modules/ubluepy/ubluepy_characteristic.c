@@ -59,11 +59,11 @@ STATIC mp_obj_t ubluepy_characteristic_make_new(const mp_obj_type_t *type, size_
         return MP_OBJ_FROM_PTR(s);
     }
 
-    if (MP_OBJ_IS_TYPE(uuid_obj, &ubluepy_uuid_type)) {
+    if (mp_obj_is_type(uuid_obj, &ubluepy_uuid_type)) {
         s->p_uuid = MP_OBJ_TO_PTR(uuid_obj);
         // (void)sd_characterstic_add(s);
     } else {
-        mp_raise_ValueError("Invalid UUID parameter");
+        mp_raise_ValueError(MP_ERROR_TEXT("Invalid UUID parameter"));
     }
 
     if (args[1].u_int > 0) {

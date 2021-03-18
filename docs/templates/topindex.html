@@ -1,4 +1,5 @@
-{% extends "defindex.html" %}
+{% extends "layout.html" %}
+{% set title = _('Overview') %}
 {% block body %}
 
   <h1>MicroPython documentation</h1>
@@ -52,6 +53,10 @@
       <p class="biglink">
         <a class="biglink" href="{{ pathto("esp8266/quickref") }}">Quick reference for the ESP8266</a><br/>
         <span class="linkdescr">pinout for ESP8266-based boards, snippets of useful code, and a tutorial</span>
+      </p>
+      <p class="biglink">
+        <a class="biglink" href="{{ pathto("esp32/quickref") }}">Quick reference for the ESP32</a><br/>
+        <span class="linkdescr">pinout for ESP32-based boards, snippets of useful code, and a tutorial</span>
       </p>
       <p class="biglink">
         <a class="biglink" href="{{ pathto("wipy/quickref") }}">Quick reference for the WiPy/CC3200</a><br/>

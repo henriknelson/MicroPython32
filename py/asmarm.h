@@ -81,7 +81,8 @@ void asm_arm_bkpt(asm_arm_t *as);
 
 // mov
 void asm_arm_mov_reg_reg(asm_arm_t *as, uint reg_dest, uint reg_src);
-void asm_arm_mov_reg_i32(asm_arm_t *as, uint rd, int imm);
+size_t asm_arm_mov_reg_i32(asm_arm_t *as, uint rd, int imm);
+void asm_arm_mov_reg_i32_optimised(asm_arm_t *as, uint rd, int imm);
 void asm_arm_mov_local_reg(asm_arm_t *as, int local_num, uint rd);
 void asm_arm_mov_reg_local(asm_arm_t *as, uint rd, int local_num);
 void asm_arm_setcc_reg(asm_arm_t *as, uint rd, uint cond);
@@ -100,6 +101,7 @@ void asm_arm_orr_reg_reg_reg(asm_arm_t *as, uint rd, uint rn, uint rm);
 void asm_arm_mov_reg_local_addr(asm_arm_t *as, uint rd, int local_num);
 void asm_arm_mov_reg_pcrel(asm_arm_t *as, uint reg_dest, uint label);
 void asm_arm_lsl_reg_reg(asm_arm_t *as, uint rd, uint rs);
+void asm_arm_lsr_reg_reg(asm_arm_t *as, uint rd, uint rs);
 void asm_arm_asr_reg_reg(asm_arm_t *as, uint rd, uint rs);
 
 // memory
@@ -177,13 +179,16 @@ void asm_arm_bx_reg(asm_arm_t *as, uint reg_src);
 #define ASM_CALL_IND(as, idx) asm_arm_bl_ind(as, idx, ASM_ARM_REG_R3)
 
 #define ASM_MOV_LOCAL_REG(as, local_num, reg_src) asm_arm_mov_local_reg((as), (local_num), (reg_src))
-#define ASM_MOV_REG_IMM(as, reg_dest, imm) asm_arm_mov_reg_i32((as), (reg_dest), (imm))
+#define ASM_MOV_REG_IMM(as, reg_dest, imm) asm_arm_mov_reg_i32_optimised((as), (reg_dest), (imm))
+#define ASM_MOV_REG_IMM_FIX_U16(as, reg_dest, imm) asm_arm_mov_reg_i32((as), (reg_dest), (imm))
+#define ASM_MOV_REG_IMM_FIX_WORD(as, reg_dest, imm) asm_arm_mov_reg_i32((as), (reg_dest), (imm))
 #define ASM_MOV_REG_LOCAL(as, reg_dest, local_num) asm_arm_mov_reg_local((as), (reg_dest), (local_num))
 #define ASM_MOV_REG_REG(as, reg_dest, reg_src) asm_arm_mov_reg_reg((as), (reg_dest), (reg_src))
 #define ASM_MOV_REG_LOCAL_ADDR(as, reg_dest, local_num) asm_arm_mov_reg_local_addr((as), (reg_dest), (local_num))
 #define ASM_MOV_REG_PCREL(as, reg_dest, label) asm_arm_mov_reg_pcrel((as), (reg_dest), (label))
 
 #define ASM_LSL_REG_REG(as, reg_dest, reg_shift) asm_arm_lsl_reg_reg((as), (reg_dest), (reg_shift))
+#define ASM_LSR_REG_REG(as, reg_dest, reg_shift) asm_arm_lsr_reg_reg((as), (reg_dest), (reg_shift))
 #define ASM_ASR_REG_REG(as, reg_dest, reg_shift) asm_arm_asr_reg_reg((as), (reg_dest), (reg_shift))
 #define ASM_OR_REG_REG(as, reg_dest, reg_src) asm_arm_orr_reg_reg_reg((as), (reg_dest), (reg_dest), (reg_src))
 #define ASM_XOR_REG_REG(as, reg_dest, reg_src) asm_arm_eor_reg_reg_reg((as), (reg_dest), (reg_dest), (reg_src))
