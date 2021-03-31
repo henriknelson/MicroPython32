@@ -148,7 +148,7 @@ print("Welcome to MeterBoard32 console!")
 print("---------------------")
 wlan = WLAN()
 wlan.active(True)
-wlan.connect("Helan","Un0s245A!")
+wlan.connect("cliffords","bluecompanysoldsleep")
 print("Connecting to WiFi..", end="")
 while not wlan.isconnected():
     print(".",end="")
@@ -168,7 +168,7 @@ from neo import Neo
 from mbus.handler import MBusHandler
 
 neo = Neo(13)
-neo.set_color(0,255,0)
+neo.purple()
 handler = MBusHandler(baudrate=2400,timeout=350,debug=True)
 handler.start()
 """)

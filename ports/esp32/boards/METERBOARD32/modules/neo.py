@@ -14,6 +14,9 @@ class Neo:
 		self.neo[0] = (r,g,b)
 		self.neo.write()
 
+	def purple(self):
+		self.set_color(128,0,128)
+
 	def pulse(self,delay=100):
 		"""Makes the NeoPixel pulse in different colors"""
 		for index in range(0,2):
