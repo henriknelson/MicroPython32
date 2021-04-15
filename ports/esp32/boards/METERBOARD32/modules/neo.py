@@ -17,6 +17,23 @@ class Neo:
 	def purple(self):
 		self.set_color(128,0,128)
 
+
+	def red(self):
+		self.set_color(255,0,0)
+
+	def green(self):
+		self.set_color(0,255,0)
+
+	def blue(self):
+		self.set_color(0,0,255)
+
+	def siren(self, sleep_time=250):
+		while True:
+			self.red()
+			time.sleep_ms(sleep_time)
+			self.blue()
+			time.sleep_ms(sleep_time)
+
 	def pulse(self,delay=100):
 		"""Makes the NeoPixel pulse in different colors"""
 		for index in range(0,2):
