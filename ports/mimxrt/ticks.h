@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Philipp Ebensberger
+ * Copyright (c) 2021 Damien P. George
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#ifndef MICROPY_INCLUDED_MIMXRT_TICKS_H
+#define MICROPY_INCLUDED_MIMXRT_TICKS_H
 
-// NOTE: pins.h shall only be included in in pin.h
-// hence no include guards are needed since they will be provided by pin.h
+void ticks_init(void);
+uint32_t ticks_us32(void);
+uint64_t ticks_us64(void);
+uint32_t ticks_ms32(void);
+void ticks_delay_us64(uint64_t us);
 
-extern pin_obj_t GPIO_AD_B0_05;
+#endif // MICROPY_INCLUDED_MIMXRT_TICKS_H
