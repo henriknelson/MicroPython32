@@ -63,7 +63,7 @@ from neo import Neo
 from meter_reader import MeterReader
 
 neo=Neo(13)
-neo.siren(450)
+neo.blue()
 
 handler=MeterReader(16)
 handler.run()
