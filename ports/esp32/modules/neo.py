@@ -1,5 +1,5 @@
 from neopixel import NeoPixel
-from machine import Pin
+from machine import Pin, Timer
 import time
 
 class Neo:
@@ -8,6 +8,8 @@ class Neo:
 	def __init__(self,pin_nr):
 		"""The constructor accepts a pin number to a pin that is connected to a NeoPixel"""
 		self.neo = NeoPixel(Pin(13),1)
+		self._siren_timer=Timer(0)
+		self._siren_state=True
 
 	def set_color(self,r,g,b):
 		"""Set the NeoPixels color to the given RGB value"""
@@ -27,12 +29,17 @@ class Neo:
 	def blue(self):
 		self.set_color(0,0,255)
 
-	def siren(self, sleep_time=250):
-		while True:
-			self.red()
-			time.sleep_ms(sleep_time)
-			self.blue()
-			time.sleep_ms(sleep_time)
+	def siren(self, sleep_time=450):
+		def tick(input):
+			self._siren_state=not self._siren_state
+			if self._siren_state:
+				self.blue()
+			else:
+				self.red()
+		if sleep_time > 0:
+			self._siren_timer.init(period=sleep_time, mode=Timer.PERIODIC, callback=tick)
+		else:
+			self._siren_timer.init()
 
 	def pulse(self,delay=100):
 		"""Makes the NeoPixel pulse in different colors"""
