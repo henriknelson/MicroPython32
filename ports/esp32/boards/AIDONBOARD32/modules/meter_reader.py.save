@@ -1,0 +1,40 @@
+import machine
+from machine import UART
+import time
+import ubinascii
+import urequests
+import ujson
+from pprint import pprint
+import sys
+import uasyncio as asyncio
+
+class MeterReader:
+
+	def __init__(self, pin_nr):
+		self.uart = UART(2, 115200, rx=pin_nr, timeout=0)
+		self.sreader = asyncio.StreamReader(self.uart)
+		self.pkg_length=337
+		self.request_url="https://api.cliffords.nu"
+		self._id = 0
+
+	def inc_id(self):
+		self._id = self._id + 1
+		return self._id
+
+	async def read(self):
+		data = await self.sreader.read()
+		hex_data=ubinascii.hexlify(data)
+		self.send_values(hex_data)
+
+	def read_and_send(self):
+		loop=asyncio.get_event_loop()
+		loop.create_task(self.read())
+		loop.run_forever()
+
+	def send_values(self, meter_values):
+		payload = ujson.dumps({"jsonrpc": "2.0", "method": "push_aidon_values", "params": {"meter_values": meter_values}, "id": self.inc_id() })
+		pprint(payload)
+		try:
+			response=urequests.post(self.request_url, headers={'Content-Type':'application/json'}, data=payload)
+		except:
+			response.close()
