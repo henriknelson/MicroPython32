@@ -277,7 +277,7 @@ typedef long mp_off_t;
 #include <sys/types.h>
 
 // board specifics
-#define MICROPY_PY_SYS_PLATFORM "esp32"
+//#define MICROPY_PY_SYS_PLATFORM "esp32"
 
 #ifndef MICROPY_HW_ENABLE_MDNS_QUERIES
 #define MICROPY_HW_ENABLE_MDNS_QUERIES      (1)
